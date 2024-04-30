@@ -8,7 +8,7 @@ const Layout: FC = () => {
   return (
     <VStack justifyContent={'space-between'} minH={'100vh'} spacing={0}>
       <Header />
-      <Box flex="1 1" alignSelf="stretch">
+      <Box display='flex' flexDirection='column' flex='1 1' alignSelf='stretch'>
         <Outlet />
       </Box>
       <Footer />

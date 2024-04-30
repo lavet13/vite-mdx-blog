@@ -10,7 +10,7 @@ const Loadable =
     (
       <Suspense
         fallback={
-          <Center minH="100vh" width={'full'}>
+          <Center flex='1' width={'full'}>
             <Spinner />
           </Center>
         }

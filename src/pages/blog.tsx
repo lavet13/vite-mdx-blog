@@ -1,8 +1,12 @@
-import { Heading } from '@chakra-ui/react';
+import { Container, Heading } from '@chakra-ui/react';
 import { FC } from 'react';
 
 const BlogPage: FC = () => {
-  return <Heading>Blog Page</Heading>;
+  return (
+    <Container>
+      <Heading>Blog Page</Heading>
+    </Container>
+  );
 };
 
 export default BlogPage;

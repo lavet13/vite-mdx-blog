@@ -1,5 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useRef } from 'react';
-import { HamburgerIcon } from '@chakra-ui/icons';
+import { Fragment, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -14,13 +13,13 @@ import {
   useTheme,
   Wrap,
   WrapItem,
+  Icon,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { FC } from 'react';
+import { HiMenu } from 'react-icons/hi';
 
 const Header: FC = () => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const placeholderRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -28,9 +27,6 @@ const Header: FC = () => {
     `(min-width: ${theme.breakpoints.md})`,
     { ssr: true, fallback: false }
   );
-
-  const isNotLargetAndIsOpen = !isLargerThanMd && isOpen;
-  console.log({ isOpen, isLargerThanMd, isNotLargetAndIsOpen });
 
   useEffect(() => {
     const body = document.body;
@@ -46,14 +42,8 @@ const Header: FC = () => {
     };
   }, [isOpen]);
 
-  useLayoutEffect(() => {
-    if (isNotLargetAndIsOpen) {
-      if (containerRef.current && placeholderRef.current) {
-        const menuHeight = containerRef.current.offsetHeight;
-        placeholderRef.current.style.height = `${menuHeight}px`;
-      }
-    }
-  }, [isNotLargetAndIsOpen]);
+  const isNotLargeAndIsOpen = !isLargerThanMd && isOpen;
+  console.log({ isOpen, isLargerThanMd, isNotLargeAndIsOpen });
 
   const buttons = [
     <Button
@@ -103,7 +93,7 @@ const Header: FC = () => {
             <IconButton
               size='sm'
               variant='outline'
-              icon={<HamburgerIcon />}
+              icon={<Icon as={HiMenu} boxSize={5} />}
               aria-label={'Open menu'}
               onClick={onOpen}
             />
@@ -116,27 +106,20 @@ const Header: FC = () => {
   );
 
   return (
-    <>
-      {isNotLargetAndIsOpen && <Box ref={placeholderRef} />}
-      <Container
-        ref={containerRef}
-        position={isNotLargetAndIsOpen ? 'absolute' : 'relative'}
-        minH={isNotLargetAndIsOpen ? 'max-content' : 'auto'}
-      >
-        {isNotLargetAndIsOpen ? (
-          <Flex minH={'max-content'} direction='column' gap='1'>
-            {content}
-            <Wrap align='center' justify='center' spacing='4'>
-              {buttons.map((button, idx) => (
-                <WrapItem key={idx}>{button}</WrapItem>
-              ))}
-            </Wrap>
-          </Flex>
-        ) : (
-          content
-        )}
-      </Container>
-    </>
+    <Container minH={isNotLargeAndIsOpen ? '100vh' : 'auto'}>
+      {isNotLargeAndIsOpen ? (
+        <Flex direction='column' gap='1'>
+          {content}
+          <Wrap align='center' justify='center' spacing='4'>
+            {buttons.map((button, idx) => (
+              <WrapItem key={idx}>{button}</WrapItem>
+            ))}
+          </Wrap>
+        </Flex>
+      ) : (
+        content
+      )}
+    </Container>
   );
 };
 
