@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardBody,
   CardFooter,
@@ -15,27 +14,28 @@ import {
   Grid,
   Icon,
 } from '@chakra-ui/react';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useTransition } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePosts } from '../features/posts';
 import { parseIntSafe } from '../utils/helpers/parse-int-safe';
 import { Link as RouterLink } from 'react-router-dom';
-import { HiArrowNarrowLeft } from "react-icons/hi";
-import { HiArrowNarrowRight } from "react-icons/hi";
+import { HiArrowNarrowLeft } from 'react-icons/hi';
+import { HiArrowNarrowRight } from 'react-icons/hi';
+import Button from '../components/button';
 
 const BlogPage: FC = () => {
+  const [isPending, startTransition] = useTransition();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
   const before = searchParams.get('before') ?? null;
   const after = searchParams.get('after') ?? null;
 
-  const { data, error, isError, isPending, isFetching, isPlaceholderData } =
-    usePosts({
-      take: 4,
-      after: parseIntSafe(after!),
-      before: parseIntSafe(before!),
-      query,
-    });
+  const { data, error, isPending: isPostsPending } = usePosts({
+    take: 4,
+    after: parseIntSafe(after!),
+    before: parseIntSafe(before!),
+    query,
+  });
 
   useEffect(() => {
     if (data?.posts.edges.length === 0) {
@@ -50,11 +50,11 @@ const BlogPage: FC = () => {
     }
   }, [data]);
 
-  const isFetchingBackwards = !!(before && isFetching);
-  const isFetchingForwards = !!(after && isFetching);
+  // const isFetchingBackwards = !!(before && isFetching);
+  // const isFetchingForwards = !!(after && isFetching);
 
   const fetchNextPage = () => {
-    if (!isPlaceholderData && data?.posts.pageInfo.hasNextPage) {
+    if (data?.posts.pageInfo.hasNextPage) {
       setSearchParams(params => {
         const query = new URLSearchParams(params.toString());
 
@@ -68,7 +68,7 @@ const BlogPage: FC = () => {
   };
 
   const fetchPreviousPage = () => {
-    if (!isPlaceholderData && data?.posts.pageInfo.hasPreviousPage) {
+    if (data?.posts.pageInfo.hasPreviousPage) {
       setSearchParams(params => {
         const query = new URLSearchParams(params.toString());
 
@@ -81,7 +81,7 @@ const BlogPage: FC = () => {
     }
   };
 
-  if (isPending) {
+  if (isPostsPending) {
     return (
       <Center flex='1' width='full'>
         <Spinner />
@@ -89,20 +89,21 @@ const BlogPage: FC = () => {
     );
   }
 
-  if (isError) {
-    return <span>Error: {error.message}</span>;
-  }
-
   console.log({ data });
 
   return (
     <Container>
-      <Grid templateColumns={'repeat(auto-fill, minmax(15rem, 1fr))'} gap="40px">
+      <Grid
+        templateColumns={'repeat(auto-fill, minmax(15rem, 1fr))'}
+        gap='40px'
+      >
         {data.posts.edges.map(post => (
           <LinkBox key={post.id} as='article'>
             <Card height='100%' variant='outline'>
               <CardHeader>
-                <Text as='time' dateTime=''>тут типа время 9 o clock</Text>
+                <Text as='time' dateTime=''>
+                  тут типа время 9 o clock
+                </Text>
                 <Heading size='md'>
                   <LinkOverlay
                     sx={{
@@ -135,22 +136,20 @@ const BlogPage: FC = () => {
         <HStack pt={3} justify={'center'} spacing={2}>
           <Button
             variant={'ghost'}
-            isLoading={isFetchingBackwards}
-            onClick={fetchPreviousPage}
-            isDisabled={isPlaceholderData || !data.posts.pageInfo.hasPreviousPage}
+            onClick={() => {fetchPreviousPage();}}
+            hasMore={!data.posts.pageInfo.hasPreviousPage}
             leftIcon={<Icon as={HiArrowNarrowLeft} />}
             spinnerPlacement='start'
-            loadingText="Предыдущая"
+            loadingText='Предыдущая'
           >
             Предыдущая
           </Button>
           <Button
-            isLoading={isFetchingForwards}
             variant='ghost'
             onClick={fetchNextPage}
-            isDisabled={isPlaceholderData || !data.posts.pageInfo.hasNextPage}
+            hasMore={!data.posts.pageInfo.hasNextPage}
             rightIcon={<Icon as={HiArrowNarrowRight} />}
-            loadingText="Следующая"
+            loadingText='Следующая'
             spinnerPlacement='end'
           >
             Следующая
