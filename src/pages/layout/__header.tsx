@@ -11,9 +11,8 @@ import {
   useDisclosure,
   useMediaQuery,
   useTheme,
-  Wrap,
-  WrapItem,
   Icon,
+  SimpleGrid,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { FC } from 'react';
@@ -52,7 +51,7 @@ const Header: FC = () => {
         onClose();
       }}
       variant='ghost'
-      size={['xs', null, 'sm']}
+      size={['md', null, 'sm']}
     >
       Блог
     </Button>,
@@ -61,7 +60,7 @@ const Header: FC = () => {
         onClose();
       }}
       variant='ghost'
-      size={['xs', null, 'sm']}
+      size={['md', null, 'sm']}
     >
       Теги
     </Button>,
@@ -71,7 +70,7 @@ const Header: FC = () => {
         onClose();
       }}
       variant='solid'
-      size={['sm', null, 'md']}
+      size={['md']}
     >
       Войти
     </Button>,
@@ -106,15 +105,15 @@ const Header: FC = () => {
   );
 
   return (
-    <Container minH={isNotLargeAndIsOpen ? '100vh' : 'auto'}>
+    <Container mb="5" minH={isNotLargeAndIsOpen ? '100vh' : 'auto'}>
       {isNotLargeAndIsOpen ? (
-        <Flex direction='column' gap='1'>
+        <Flex direction='column' gap='4'>
           {content}
-          <Wrap align='center' justify='center' spacing='4'>
+          <SimpleGrid alignItems={'center'} spacing={'20px'} minChildWidth={'150px'}>
             {buttons.map((button, idx) => (
-              <WrapItem key={idx}>{button}</WrapItem>
+              <Fragment key={idx}>{button}</Fragment>
             ))}
-          </Wrap>
+          </SimpleGrid>
         </Flex>
       ) : (
         content

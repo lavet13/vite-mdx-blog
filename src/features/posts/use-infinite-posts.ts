@@ -1,7 +1,7 @@
 import { PostsQuery } from '../../gql/graphql';
 import { graphql } from '../../gql';
 import client from '../../graphql-client';
-import { useInfiniteQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { InitialDataInfiniteOptions } from '../../utils/graphql/initial-data-infinite-options';
 
 type UseInfinitePostsProps = {
@@ -31,7 +31,7 @@ export const useInfinitePosts = (
     }
   `);
 
-  return useSuspenseInfiniteQuery<PostsQuery>({
+  return useInfiniteQuery<PostsQuery>({
     queryKey: [(posts.definitions[0] as any).name.value, { input: { take } }],
     queryFn: () => {
       return client.request(posts, { input: { take } });

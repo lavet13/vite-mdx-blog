@@ -1,10 +1,162 @@
-import { Container, Heading } from '@chakra-ui/react';
-import { FC } from 'react';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Center,
+  Container,
+  Heading,
+  HStack,
+  LinkBox,
+  LinkOverlay,
+  Spinner,
+  Text,
+  Grid,
+  Icon,
+} from '@chakra-ui/react';
+import { FC, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { usePosts } from '../features/posts';
+import { parseIntSafe } from '../utils/helpers/parse-int-safe';
+import { Link as RouterLink } from 'react-router-dom';
+import { HiArrowNarrowLeft } from "react-icons/hi";
+import { HiArrowNarrowRight } from "react-icons/hi";
 
 const BlogPage: FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('q') ?? '';
+  const before = searchParams.get('before') ?? null;
+  const after = searchParams.get('after') ?? null;
+
+  const { data, error, isError, isPending, isFetching, isPlaceholderData } =
+    usePosts({
+      take: 4,
+      after: parseIntSafe(after!),
+      before: parseIntSafe(before!),
+      query,
+    });
+
+  useEffect(() => {
+    if (data?.posts.edges.length === 0) {
+      setSearchParams(params => {
+        const query = new URLSearchParams(params.toString());
+
+        query.delete('after');
+        query.delete('before');
+
+        return query;
+      });
+    }
+  }, [data]);
+
+  const isFetchingBackwards = !!(before && isFetching);
+  const isFetchingForwards = !!(after && isFetching);
+
+  const fetchNextPage = () => {
+    if (!isPlaceholderData && data?.posts.pageInfo.hasNextPage) {
+      setSearchParams(params => {
+        const query = new URLSearchParams(params.toString());
+
+        query.set('after', `${data.posts.pageInfo.endCursor}`);
+        query.delete('before');
+        query.delete('q');
+
+        return query;
+      });
+    }
+  };
+
+  const fetchPreviousPage = () => {
+    if (!isPlaceholderData && data?.posts.pageInfo.hasPreviousPage) {
+      setSearchParams(params => {
+        const query = new URLSearchParams(params.toString());
+
+        query.set('before', `${data.posts.pageInfo.startCursor}`);
+        query.delete('after');
+        query.delete('q');
+
+        return query;
+      });
+    }
+  };
+
+  if (isPending) {
+    return (
+      <Center flex='1' width='full'>
+        <Spinner />
+      </Center>
+    );
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
+
+  console.log({ data });
+
   return (
     <Container>
-      <Heading>Blog Page</Heading>
+      <Grid templateColumns={'repeat(auto-fill, minmax(15rem, 1fr))'} gap="40px">
+        {data.posts.edges.map(post => (
+          <LinkBox key={post.id} as='article'>
+            <Card height='100%' variant='outline'>
+              <CardHeader>
+                <Text as='time' dateTime=''>тут типа время 9 o clock</Text>
+                <Heading size='md'>
+                  <LinkOverlay
+                    sx={{
+                      _hover: {
+                        textDecoration: 'underline',
+                      },
+                    }}
+                    as={RouterLink}
+                    to={`/post/${post.id}`}
+                  >
+                    {post.title}
+                  </LinkOverlay>
+                </Heading>
+              </CardHeader>
+              <CardBody>
+                <Text height='100%' display={'flex'} alignItems='end'>
+                  {post.preview}
+                </Text>
+              </CardBody>
+            </Card>
+          </LinkBox>
+        ))}
+      </Grid>
+      {data.posts.edges.length === 0 && (
+        <Center>
+          <Heading>No posts :(</Heading>
+        </Center>
+      )}
+      {data.posts.edges.length !== 0 && (
+        <HStack pt={3} justify={'center'} spacing={2}>
+          <Button
+            variant={'ghost'}
+            isLoading={isFetchingBackwards}
+            onClick={fetchPreviousPage}
+            isDisabled={isPlaceholderData || !data.posts.pageInfo.hasPreviousPage}
+            leftIcon={<Icon as={HiArrowNarrowLeft} />}
+            spinnerPlacement='start'
+            loadingText="Предыдущая"
+          >
+            Предыдущая
+          </Button>
+          <Button
+            isLoading={isFetchingForwards}
+            variant='ghost'
+            onClick={fetchNextPage}
+            isDisabled={isPlaceholderData || !data.posts.pageInfo.hasNextPage}
+            rightIcon={<Icon as={HiArrowNarrowRight} />}
+            loadingText="Следующая"
+            spinnerPlacement='end'
+          >
+            Следующая
+          </Button>
+        </HStack>
+      )}
     </Container>
   );
 };

@@ -51,7 +51,7 @@ export const usePosts = (
     }
   `);
 
-  return useSuspenseQuery<PostsQuery>({
+  return useQuery<PostsQuery>({
     queryKey: [(posts.definitions[0] as any).name.value, { input }],
     queryFn: () => {
       return client.request(posts, { input });
