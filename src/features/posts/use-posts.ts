@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery, useSuspenseQuery } from "@tanstack/react-qu
 import { graphql } from "../../gql";
 import { PostsQuery } from "../../gql/graphql";
 import { InitialDataOptions } from "../../utils/graphql/initial-data-options";
-import client from "../../graphql-request/client";
+import client from "../../graphql-client";
 
 type UsePostsProps = {
   take?: number;

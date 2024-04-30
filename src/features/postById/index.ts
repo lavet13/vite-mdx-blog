@@ -1,7 +1,7 @@
 import { graphql } from '../../gql';
 import { PostByIdQuery } from '../../gql/graphql';
-import client from '../../graphql-request/client';
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import client from '../../graphql-client';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { InitialDataOptions } from '../../utils/graphql/initial-data-options';
 
 export const usePostById = (postId: string, options?: InitialDataOptions<PostByIdQuery>) => {

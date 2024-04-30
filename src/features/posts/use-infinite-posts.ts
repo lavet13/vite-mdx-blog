@@ -1,6 +1,6 @@
 import { PostsQuery } from '../../gql/graphql';
 import { graphql } from '../../gql';
-import client from '../../graphql-request/client';
+import client from '../../graphql-client';
 import { useInfiniteQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { InitialDataInfiniteOptions } from '../../utils/graphql/initial-data-infinite-options';
 
