@@ -14,7 +14,7 @@ import {
   Grid,
   Icon,
 } from '@chakra-ui/react';
-import { FC, useEffect, useTransition } from 'react';
+import { FC, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { usePosts } from '../features/posts';
 import { parseIntSafe } from '../utils/helpers/parse-int-safe';
@@ -24,7 +24,6 @@ import { HiArrowNarrowRight } from 'react-icons/hi';
 import Button from '../components/button';
 
 const BlogPage: FC = () => {
-  const [isPending, startTransition] = useTransition();
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
   const before = searchParams.get('before') ?? null;
@@ -87,6 +86,10 @@ const BlogPage: FC = () => {
         <Spinner />
       </Center>
     );
+  }
+
+  if(error) {
+    throw error;
   }
 
   console.log({ data });
