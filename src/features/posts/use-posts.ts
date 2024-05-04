@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { keepPreviousData, useSuspenseQuery } from "@tanstack/react-query";
 import { graphql } from "../../gql";
 import { PostsQuery } from "../../gql/graphql";
 import { InitialDataOptions } from "../../utils/graphql/initial-data-options";
@@ -53,7 +53,8 @@ export const usePosts = (
 
   return useSuspenseQuery<PostsQuery>({
     queryKey: [(posts.definitions[0] as any).name.value, { input }],
-    queryFn: () => {
+    queryFn: async () => {
+      // await new Promise(resolve => setTimeout(() => resolve(0), 10000000));
       return client.request(posts, { input });
     },
     placeholderData: keepPreviousData,

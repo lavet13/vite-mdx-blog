@@ -29,7 +29,7 @@ const Header: FC = () => {
 
   useEffect(() => {
     const body = document.body;
-    if (isOpen) {
+    if (isNotLargeAndIsOpen) {
       body.style.overflow = 'hidden';
     } else {
       body.style.overflow = 'auto';
@@ -39,7 +39,7 @@ const Header: FC = () => {
     return () => {
       body.style.overflow = 'auto';
     };
-  }, [isOpen]);
+  }, [isOpen, isLargerThanMd]);
 
   const isNotLargeAndIsOpen = !isLargerThanMd && isOpen;
   console.log({ isOpen, isLargerThanMd, isNotLargeAndIsOpen });
@@ -109,7 +109,7 @@ const Header: FC = () => {
       {isNotLargeAndIsOpen ? (
         <Flex direction='column' gap='4'>
           {content}
-          <SimpleGrid alignItems={'center'} spacing={'20px'} minChildWidth={'150px'}>
+          <SimpleGrid alignItems={'center'} spacing={'20px'} minChildWidth={'200px'}>
             {buttons.map((button, idx) => (
               <Fragment key={idx}>{button}</Fragment>
             ))}

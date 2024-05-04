@@ -55,15 +55,14 @@ to bundle CSS into JS file.
 - Bidirectional infinite scrolling
 
 ## Incomplete:
-- Vite-plugin-node
+- different stuctured routes in react app
+- switch to mongodb?
 - Query Key Factory
-- Dynamic Imports, lazy loading in react
 - MDX
 - File upload(graphql?? express??)
 - First mutation
 - First subscription(probably EventStream, not sure)
 - Dockerize the app
-- Combining React and GraphQL-yoga in a Single Node.js Process
 
 <!-- This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules. -->
 <!---->

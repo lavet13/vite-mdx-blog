@@ -13,6 +13,7 @@ import {
   Text,
   Grid,
   Icon,
+  Flex,
 } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -29,15 +30,17 @@ const BlogPage: FC = () => {
   const before = searchParams.get('before') ?? null;
   const after = searchParams.get('after') ?? null;
 
-  const { data, error, isPending: isPostsPending } = usePosts({
-    take: 4,
-    after: parseIntSafe(after!),
-    before: parseIntSafe(before!),
-    query,
-  });
+  const { data: postsResult, error, status } = usePosts(
+    {
+      take: 4,
+      after: parseIntSafe(after!),
+      before: parseIntSafe(before!),
+      query,
+    },
+  );
 
   useEffect(() => {
-    if (data?.posts.edges.length === 0) {
+    if (postsResult?.posts.edges.length === 0) {
       setSearchParams(params => {
         const query = new URLSearchParams(params.toString());
 
@@ -47,17 +50,17 @@ const BlogPage: FC = () => {
         return query;
       });
     }
-  }, [data]);
+  }, [postsResult]);
 
   // const isFetchingBackwards = !!(before && isFetching);
   // const isFetchingForwards = !!(after && isFetching);
 
   const fetchNextPage = () => {
-    if (data?.posts.pageInfo.hasNextPage) {
+    if (postsResult?.posts.pageInfo.hasNextPage) {
       setSearchParams(params => {
         const query = new URLSearchParams(params.toString());
 
-        query.set('after', `${data.posts.pageInfo.endCursor}`);
+        query.set('after', `${postsResult.posts.pageInfo.endCursor}`);
         query.delete('before');
         query.delete('q');
 
@@ -67,11 +70,11 @@ const BlogPage: FC = () => {
   };
 
   const fetchPreviousPage = () => {
-    if (data?.posts.pageInfo.hasPreviousPage) {
+    if (postsResult?.posts.pageInfo.hasPreviousPage) {
       setSearchParams(params => {
         const query = new URLSearchParams(params.toString());
 
-        query.set('before', `${data.posts.pageInfo.startCursor}`);
+        query.set('before', `${postsResult.posts.pageInfo.startCursor}`);
         query.delete('after');
         query.delete('q');
 
@@ -80,27 +83,18 @@ const BlogPage: FC = () => {
     }
   };
 
-  if (isPostsPending) {
-    return (
-      <Center flex='1' width='full'>
-        <Spinner />
-      </Center>
-    );
-  }
-
-  if(error) {
+  if (error) {
     throw error;
   }
-
-  console.log({ data });
 
   return (
     <Container>
       <Grid
         templateColumns={'repeat(auto-fill, minmax(15rem, 1fr))'}
         gap='40px'
+        mb={2}
       >
-        {data.posts.edges.map(post => (
+        {postsResult.posts.edges.map(post => (
           <LinkBox key={post.id} as='article'>
             <Card height='100%' variant='outline'>
               <CardHeader>
@@ -130,17 +124,19 @@ const BlogPage: FC = () => {
           </LinkBox>
         ))}
       </Grid>
-      {data.posts.edges.length === 0 && (
+      {postsResult.posts.edges.length === 0 && (
         <Center>
           <Heading>No posts :(</Heading>
         </Center>
       )}
-      {data.posts.edges.length !== 0 && (
-        <HStack pt={3} justify={'center'} spacing={2}>
+      {postsResult.posts.edges.length !== 0 && (
+        <Flex py={3} justify={'center'} direction={['column', 'row']} gap={2}>
           <Button
             variant={'ghost'}
-            onClick={() => {fetchPreviousPage();}}
-            hasMore={!data.posts.pageInfo.hasPreviousPage}
+            onClick={() => {
+              fetchPreviousPage();
+            }}
+            hasMore={!postsResult.posts.pageInfo.hasPreviousPage}
             leftIcon={<Icon as={HiArrowNarrowLeft} />}
             spinnerPlacement='start'
             loadingText='Предыдущая'
@@ -150,14 +146,14 @@ const BlogPage: FC = () => {
           <Button
             variant='ghost'
             onClick={fetchNextPage}
-            hasMore={!data.posts.pageInfo.hasNextPage}
+            hasMore={!postsResult.posts.pageInfo.hasNextPage}
             rightIcon={<Icon as={HiArrowNarrowRight} />}
             loadingText='Следующая'
             spinnerPlacement='end'
           >
             Следующая
           </Button>
-        </HStack>
+        </Flex>
       )}
     </Container>
   );

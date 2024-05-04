@@ -1,6 +1,6 @@
 import { Box, Button, VStack, Text, Center } from '@chakra-ui/react';
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
-import { FC, useLayoutEffect, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './__footer';
 import Header from './__header';
@@ -18,7 +18,7 @@ const Layout: FC = () => {
                 const location = useLocation();
                 const errorLocation = useRef(location.pathname);
 
-                useLayoutEffect(() => {
+                useEffect(() => {
                   if(location.pathname !== errorLocation.current) {
                     resetErrorBoundary();
                   }

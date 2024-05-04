@@ -1,20 +1,23 @@
 import { Center, Spinner } from '@chakra-ui/react';
 import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import suspenseFallbackMap from './suspense-fallback-map';
 
 // So in the App.tsx we could import css file which is gonna be in multiple
 // entries. For example, we could import font.css
 
 const Loadable =
-  (Component: React.ComponentType) => (props: JSX.IntrinsicAttributes) =>
+  (
+    Component: React.ComponentType,
+    fallback = (
+      <Center flex='1' width={'full'}>
+        <Spinner />
+      </Center>
+    )
+  ) =>
+  (props: JSX.IntrinsicAttributes) =>
     (
-      <Suspense
-        fallback={
-          <Center flex='1' width={'full'}>
-            <Spinner />
-          </Center>
-        }
-      >
+      <Suspense fallback={fallback}>
         <Component {...props} />
       </Suspense>
     );
@@ -23,7 +26,7 @@ const NotFound = Loadable(lazy(() => import('./pages/layout/__not-found')));
 const Layout = Loadable(lazy(() => import('./pages/layout/__layout')));
 
 const PagePathsWithComponents: Record<string, any> = import.meta.glob(
-  './pages/**/*.tsx'
+  './pages/**/[!_]*.tsx'
 );
 
 console.log({
@@ -32,12 +35,6 @@ console.log({
 });
 
 const routes = Object.keys(PagePathsWithComponents).map(path => {
-  const excludedMatch = path.match(/\.\/pages\/layout\/__[^/\[]+\.tsx$/);
-  // console.log({ excludedMatch });
-  if (excludedMatch) {
-    return null; // Exclude files starting with 2 underscores
-  }
-
   const dynamicMatch = path.match(/\.\/pages\/(.*)\/\[(.*)\]\.tsx$/);
   // console.log({ dynamicMatch });
   if (dynamicMatch) {
@@ -54,10 +51,12 @@ const routes = Object.keys(PagePathsWithComponents).map(path => {
   if (regularMatch) {
     const [, name] = regularMatch;
     const lowerName = name.toLowerCase();
+    const fallback = suspenseFallbackMap.get(lowerName) || undefined;
+
     return {
       name,
-      path: lowerName === 'home' ? '/' : `/${lowerName.toLowerCase()}`,
-      component: Loadable(lazy(PagePathsWithComponents[path])),
+      path: lowerName === 'home' ? '/' : `/${lowerName}`,
+      component: Loadable(lazy(PagePathsWithComponents[path]), fallback),
     };
   }
 
@@ -90,4 +89,3 @@ const App = () => {
 };
 
 export default App;
-
