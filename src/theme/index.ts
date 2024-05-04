@@ -4,6 +4,7 @@ import styles from './styles';
 
 import Container from './components/container';
 import Button from './components/button';
+import Card from './components/card';
 
 const config: ThemeConfig = {
   initialColorMode: 'dark',
@@ -14,6 +15,7 @@ const theme = extendTheme({
   components: {
     Container,
     Button,
+    Card,
   },
   config,
   styles,
@@ -23,5 +25,6 @@ const theme = extendTheme({
     mono: `"Golos", "Raleway", ${base.fonts?.mono}`,
   },
 });
+console.log({ theme });
 
 export default theme;
