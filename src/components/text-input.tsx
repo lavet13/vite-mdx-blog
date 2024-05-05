@@ -19,34 +19,39 @@ type TextInputProps = {
   shouldFocus?: boolean;
 } & InputProps;
 
-const TextInput: FC<TextInputProps> = memo(({ label, name, shouldFocus, ...props }) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+const TextInput: FC<TextInputProps> = memo(
+  ({ label, name, shouldFocus, ...props }) => {
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    console.log({ name, id: props.id });
 
-  useEffect(() => {
-    shouldFocus && inputRef.current?.focus();
-  }, [shouldFocus]);
+    useEffect(() => {
+      shouldFocus && inputRef.current?.focus();
+    }, [shouldFocus]);
 
-  return (
-    <FastField name={name}>
-      {({ field: { value, ...field}, meta }: FastFieldProps) => (
-        <FormControl
-          isRequired={props.isRequired}
-          isInvalid={!!meta.error && meta.touched}
-        >
-          <FormLabel htmlFor={props.id || name}>{label}</FormLabel>
-          <Input
-            {...field}
-            {...props}
-            value={value || ''}
-            type={props.type || 'text'}
-            id={props.id || name}
-            ref={inputRef}
-          />
-          <ErrorMessage name={name} component={FormErrorMessage} />
-        </FormControl>
-      )}
-    </FastField>
-  );
-});
+    return (
+      <FastField name={name}>
+        {({ field: { value, ...field }, meta }: FastFieldProps) => (
+          <FormControl
+            isRequired={props.isRequired}
+            isInvalid={!!meta.error && meta.touched}
+          >
+            <FormLabel id={props.id || name} htmlFor={props.id || name}>
+              {label}
+            </FormLabel>
+            <Input
+              {...field}
+              {...props}
+              value={value || ''}
+              type={props.type || 'text'}
+              id={props.id || name}
+              ref={inputRef}
+            />
+            <ErrorMessage name={name} component={FormErrorMessage} />
+          </FormControl>
+        )}
+      </FastField>
+    );
+  }
+);
 
 export default TextInput;

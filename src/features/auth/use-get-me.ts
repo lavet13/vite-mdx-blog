@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { graphql } from "../../gql";
 import { MeQuery } from "../../gql/graphql";
 import client from "../../graphql-client";
@@ -16,14 +16,14 @@ export const useGetMe = (options?: InitialDataOptions<MeQuery>) => {
     }
   `);
 
-  return useSuspenseQuery<MeQuery>({
+  return useQuery<MeQuery>({
     queryKey: [(me.definitions[0] as any).name.value],
     queryFn: () => {
       return client.request(me);
     },
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
     ...options,
   });
 };

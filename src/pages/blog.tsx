@@ -30,7 +30,7 @@ const BlogPage: FC = () => {
   const before = searchParams.get('before') ?? null;
   const after = searchParams.get('after') ?? null;
 
-  const { data: postsResult, error, status } = usePosts(
+  const { data: postsResult, error } = usePosts(
     {
       take: 4,
       after: parseIntSafe(after!),

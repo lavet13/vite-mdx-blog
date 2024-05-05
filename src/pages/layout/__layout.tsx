@@ -19,7 +19,7 @@ const Layout: FC = () => {
                 const errorLocation = useRef(location.pathname);
 
                 useEffect(() => {
-                  if(location.pathname !== errorLocation.current) {
+                  if (location.pathname !== errorLocation.current) {
                     resetErrorBoundary();
                   }
                 }, [location.pathname]);
