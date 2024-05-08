@@ -55,14 +55,12 @@ to bundle CSS into JS file.
 - Bidirectional infinite scrolling
 
 ## Incomplete:
-- different stuctured routes in react app
-- switch to mongodb?
-- Query Key Factory
+- Invalidation and optimistic updates using useMutation
 - MDX
 - File upload(graphql?? express??)
-- First mutation
 - First subscription(probably EventStream, not sure)
 - Dockerize the app
+- Query Key Factory
 
 <!-- This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules. -->
 <!---->

@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useRef } from 'react';
 import {
-  Box,
   Button,
   ButtonGroup,
   CloseButton,
@@ -28,25 +27,23 @@ const Header: FC = () => {
   const toastIdRef = useRef<ToastId | null>(null);
   const {
     data: getMeResult,
-    error,
-    isError,
     isPending,
     isRefetching,
-  } = useGetMe({ retry: false });
-  console.log({ getMeResult, isRefetching, error, isError });
+  } = useGetMe({
+    retry: false,
+    meta: {
+      errorMessage: 'Failed to fetch the user info!',
+    },
+  });
 
-  const {
-    mutate: logout,
-    error: logoutError,
-    isError: logoutIsError,
-  } = useLogout({
+  const { mutate: logout } = useLogout({
     onSuccess: () => {
       queryClient.setQueryData(['Me'], null);
 
       if (toastIdRef.current) {
         toast.close(toastIdRef.current);
       }
-      toast({
+      toastIdRef.current = toast({
         title: 'Logout',
         description: 'Успешно вышли из аккаунта! ᕦ(ò_óˇ)ᕤ',
         status: 'success',
@@ -70,49 +67,6 @@ const Header: FC = () => {
     },
   });
 
-  useEffect(() => {
-    console.log('effect fired!');
-    if (isError) {
-      if (isGraphQLRequestError(error)) {
-        toast({
-          title: 'Account',
-          description: error.response.errors[0].message,
-          status: 'error',
-          duration: 4000,
-          isClosable: true,
-        });
-      } else if (error instanceof Error) {
-        toast({
-          title: 'Account',
-          description: `${error.message} (╯‵□′)╯︵┻━┻`,
-          status: 'error',
-          duration: 4000,
-          isClosable: true,
-        });
-      }
-    }
-
-    if (logoutIsError) {
-      if (isGraphQLRequestError(logoutError)) {
-        toast({
-          title: 'Logout',
-          description: logoutError.response.errors[0].message,
-          status: 'error',
-          duration: 2000,
-          isClosable: true,
-        });
-      } else if (logoutError instanceof Error) {
-        toast({
-          title: 'Logout',
-          description: `${logoutError.message} (╯‵□′)╯︵┻━┻`,
-          status: 'error',
-          duration: 2000,
-          isClosable: true,
-        });
-      }
-    }
-  }, [isError, logoutIsError, logoutError, error]);
-
   const theme = useTheme();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -123,7 +77,7 @@ const Header: FC = () => {
 
   useEffect(() => {
     const body = document.body;
-    if (isNotLargeAndIsOpen) {
+    if (isNotLargerAndIsOpen) {
       body.style.overflow = 'hidden';
     } else {
       body.style.overflow = 'auto';
@@ -135,7 +89,7 @@ const Header: FC = () => {
     };
   }, [isOpen, isLargerThanMd]);
 
-  const isNotLargeAndIsOpen = !isLargerThanMd && isOpen;
+  const isNotLargerAndIsOpen = !isLargerThanMd && isOpen;
 
   const buttons = [
     <Button
@@ -188,8 +142,10 @@ const Header: FC = () => {
   ];
 
   let content = (
-    <Flex pt='1.5' align={'center'}>
-      <Box>Лого</Box>
+    <Flex pt='1.5' align={'center'} minH={'58px'}>
+      <Button variant='link' onClick={() => navigate('/')}>
+        Лого
+      </Button>
       <Spacer />
       {isLargerThanMd ? (
         <ButtonGroup alignItems='center' gap='2'>
@@ -216,8 +172,8 @@ const Header: FC = () => {
   );
 
   return (
-    <Container mb='5' minH={isNotLargeAndIsOpen ? '100vh' : 'auto'}>
-      {isNotLargeAndIsOpen ? (
+    <Container mb='5' minH={isNotLargerAndIsOpen ? '100vh' : 'auto'}>
+      {isNotLargerAndIsOpen ? (
         <Flex direction='column' gap='4'>
           {content}
           <SimpleGrid

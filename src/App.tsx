@@ -77,14 +77,16 @@ const filteredRoutes = routes.filter(
 
 const App = () => {
   return (
-    <Routes>
-      <Route path='/' element={<Layout />}>
-        {filteredRoutes.map(({ path, component: ReactComponent }) => (
-          <Route key={path} path={path} element={<ReactComponent />} />
-        ))}
-        <Route path='*' element={<NotFound />} />
-      </Route>
-    </Routes>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          {filteredRoutes.map(({ path, component: ReactComponent }) => (
+            <Route key={path} path={path} element={<ReactComponent />} />
+          ))}
+          <Route path='*' element={<NotFound />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 };
 

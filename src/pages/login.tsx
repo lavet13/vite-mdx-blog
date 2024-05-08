@@ -1,13 +1,6 @@
-import {
-  Button,
-  Container,
-  ToastId,
-  useToast,
-  Icon,
-} from '@chakra-ui/react';
+import { Button, Center, Container, ToastId, useToast } from '@chakra-ui/react';
 import { Formik, FormikHelpers, FormikProps, Form } from 'formik';
 import { FC, useRef } from 'react';
-import { HiArrowNarrowRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { object, ObjectSchema, string } from 'yup';
 import { Persist } from '../components/persist-form';
@@ -42,10 +35,7 @@ const Login: FC = () => {
   const toast = useToast();
   const toastIdRef = useRef<ToastId | null>(null);
   const { refetch } = useGetMe();
-  const { mutateAsync: loginUser } = useLogin({
-    onSuccess: data => {},
-    onError: error => {},
-  });
+  const { mutateAsync: loginUser } = useLogin();
 
   const handleSubmit: HandleSubmitProps = async values => {
     if (isFormRefNotNull(formRef)) {
@@ -91,35 +81,43 @@ const Login: FC = () => {
   };
 
   return (
-    <Container>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
-        innerRef={formRef}
-      >
-        {({ isSubmitting }) => {
-          return (
-            <Form>
-              <TextInput variant="filled" shouldFocus name='login' label='Логин' />
-              <TextInput variant="filled" name='password' label='Пароль' />
+    <Center flex="1">
+      <Container maxW={'600px'} flex="1">
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+          innerRef={formRef}
+        >
+          {({ isSubmitting }) => {
+            return (
+              <Form>
+                <TextInput
+                  variant='filled'
+                  shouldFocus
+                  name='login'
+                  label='Логин'
+                />
+                <TextInput variant='filled' name='password' label='Пароль' />
 
-              <Button
-                type='submit'
-                isLoading={isSubmitting}
-                mt='4'
-                spinnerPlacement='end'
-                loadingText='Проверка'
-              >
-                Войти
-              </Button>
+                <Button
+                  type='submit'
+                  isLoading={isSubmitting}
+                  mt='4'
+                  spinnerPlacement='end'
+                  loadingText='Проверка'
+                  width={['100%', 'auto']}
+                >
+                  Войти
+                </Button>
 
-              <Persist name='login-form' />
-            </Form>
-          );
-        }}
-      </Formik>
-    </Container>
+                <Persist name='login-form' />
+              </Form>
+            );
+          }}
+        </Formik>
+      </Container>
+    </Center>
   );
 };
 
