@@ -55,6 +55,7 @@ to bundle CSS into JS file.
 - Bidirectional infinite scrolling
 
 ## Incomplete:
+- refresh token and access token
 - Invalidation and optimistic updates using useMutation
 - MDX
 - File upload(graphql?? express??)

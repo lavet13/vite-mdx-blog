@@ -5,6 +5,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Footer from './__footer';
 import Header from './__header';
 import { ErrorBoundary } from 'react-error-boundary';
+import { isGraphQLRequestError } from '../../utils/graphql/is-graphql-request-error';
 
 const Layout: FC = () => {
   return (
@@ -24,6 +25,10 @@ const Layout: FC = () => {
                   }
                 }, [location.pathname]);
 
+                const errorMessage = isGraphQLRequestError(error)
+                  ? error.response.errors[0].message
+                  : error.message;
+
                 return (
                   <Center justifyContent='center' flex='1' w='full'>
                     <Box alignSelf='center'>
@@ -35,7 +40,7 @@ const Layout: FC = () => {
                       >
                         Try again
                       </Button>
-                      <Text>Error: {error.message}</Text>
+                      <Text>Error: {errorMessage}</Text>
                     </Box>
                   </Center>
                 );

@@ -35,19 +35,26 @@ console.log({
 });
 
 const routes = Object.keys(PagePathsWithComponents).map(path => {
-  const dynamicMatch = path.match(/\.\/pages\/(.*)\/\[(.*)\]\.tsx$/);
-  // console.log({ dynamicMatch });
+  const dynamicMatch = path.match(/\.\/pages\/(.*?)\/\[(.*?)\](?:\/(.*?)(?:\/(.*?))?)?\.tsx$/);
+  console.log({ dynamicMatch });
   if (dynamicMatch) {
-    const [, routePath, paramName] = dynamicMatch;
+    const [, routePath, paramName, nestedPath = '', nestedParamName = ''] = dynamicMatch;
+
+    const nestedPathToUse = nestedPath === 'index' ? '' : nestedPath;
+    const nestedParamToUse = nestedParamName ? `:${nestedParamName}` : '';
+
+    console.log({
+      path: `${routePath}/:${paramName}${nestedPathToUse ? `/${nestedPathToUse}${nestedParamToUse}` : ''}`,
+    });
+
     return {
-      name: `${routePath}/${paramName}`,
-      path: `${routePath}/:${paramName}`,
+      name: `${routePath}/${paramName}${nestedPathToUse ? `/${nestedPathToUse}${nestedParamName}` : ''}`,
+      path: `${routePath}/:${paramName}${nestedPathToUse ? `/${nestedPathToUse}${nestedParamToUse}` : ''}`,
       component: Loadable(lazy(PagePathsWithComponents[path])),
     };
   }
 
-  const regularMatch = path.match(/\.\/pages\/(.*)\.tsx$/);
-  // console.log({ regularMatch });
+  const regularMatch = path.match(/\.\/pages\/(.*?)\/?(index)?\.tsx$/);
   if (regularMatch) {
     const [, name] = regularMatch;
     const lowerName = name.toLowerCase();

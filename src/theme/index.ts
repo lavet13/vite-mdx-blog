@@ -25,6 +25,5 @@ const theme = extendTheme({
     mono: `"Golos", "Raleway", ${base.fonts?.mono}`,
   },
 });
-console.log({ theme });
 
 export default theme;

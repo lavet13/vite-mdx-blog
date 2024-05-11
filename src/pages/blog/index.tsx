@@ -17,12 +17,12 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { usePosts } from '../features/posts';
-import { parseIntSafe } from '../utils/helpers/parse-int-safe';
+import { usePosts } from '../../features/posts';
+import { parseIntSafe } from '../../utils/helpers/parse-int-safe';
 import { Link as RouterLink } from 'react-router-dom';
 import { HiArrowNarrowLeft } from 'react-icons/hi';
 import { HiArrowNarrowRight } from 'react-icons/hi';
-import Button from '../components/button';
+import Button from '../../components/button';
 
 const BlogPage: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -109,7 +109,7 @@ const BlogPage: FC = () => {
                       },
                     }}
                     as={RouterLink}
-                    to={`/post/${post.id}`}
+                    to={`${post.id}`}
                   >
                     {post.title}
                   </LinkOverlay>
