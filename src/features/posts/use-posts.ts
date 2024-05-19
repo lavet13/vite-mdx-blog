@@ -3,6 +3,7 @@ import { graphql } from "../../gql";
 import { PostsQuery } from "../../gql/graphql";
 import { InitialDataOptions } from "../../utils/graphql/initial-data-options";
 import client from "../../graphql-client";
+import { ConsoleLog } from "../../utils/debug/console-log";
 
 type UsePostsProps = {
   take?: number;
@@ -16,7 +17,7 @@ export const usePosts = (
   options?: InitialDataOptions<PostsQuery>
 ) => {
   const input: Record<string, any> = {};
-  console.log({ before, after });
+  ConsoleLog({ before, after });
 
   if (after !== null && after !== undefined) {
     input.after = after;
@@ -30,7 +31,7 @@ export const usePosts = (
   if (query?.length !== 0) {
     input.query = query;
   }
-  console.log({ input });
+  ConsoleLog({ input });
 
   const posts = graphql(`
     query Posts($input: PostsInput!) {

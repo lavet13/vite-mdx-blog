@@ -9,6 +9,7 @@ import {
   Input,
   InputProps,
 } from '@chakra-ui/react';
+import { ConsoleLog } from '../utils/debug/console-log';
 
 type TextInputProps = {
   label: string;
@@ -22,7 +23,7 @@ type TextInputProps = {
 const TextInput: FC<TextInputProps> = memo(
   ({ label, name, shouldFocus, ...props }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
-    console.log({ name, id: props.id });
+    ConsoleLog({ name, id: props.id });
 
     useEffect(() => {
       shouldFocus && inputRef.current?.focus();

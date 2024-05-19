@@ -1,3 +1,5 @@
+// import { ConsoleLog } from "../debug/console-log";
+
 export const unflattenObject = (flatObject: Record<string, any>): Record<string, any> => {
   const result = {};
 
@@ -52,4 +54,4 @@ export const unflattenObject = (flatObject: Record<string, any>): Record<string,
 //
 // const originalNestedStructure = unflattenObject(flattenedDataFromBackend);
 //
-// console.log(originalNestedStructure);
+// ConsoleLog(originalNestedStructure);

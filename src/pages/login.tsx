@@ -6,6 +6,7 @@ import { object, ObjectSchema, string } from 'yup';
 import { Persist } from '../components/persist-form';
 import TextInput from '../components/text-input';
 import { useGetMe, useLogin } from '../features/auth';
+import { ConsoleLog } from '../utils/debug/console-log';
 import { isFormRefNotNull } from '../utils/form/is-form-ref-not-null';
 import { isGraphQLRequestError } from '../utils/graphql/is-graphql-request-error';
 
@@ -59,7 +60,7 @@ const Login: FC = () => {
 
         navigate('/');
       } catch (error: unknown) {
-        console.log({ error });
+        ConsoleLog({ error });
         if (isGraphQLRequestError(error) && formRef.current !== null) {
           if (toastIdRef.current) {
             toast.close(toastIdRef.current);

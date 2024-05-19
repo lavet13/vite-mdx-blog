@@ -2,6 +2,7 @@ import { Center, Spinner } from '@chakra-ui/react';
 import { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import suspenseFallbackMap from './suspense-fallback-map';
+import { ConsoleLog } from './utils/debug/console-log';
 
 // So in the App.tsx we could import css file which is gonna be in multiple
 // entries. For example, we could import font.css
@@ -29,21 +30,21 @@ const PagePathsWithComponents: Record<string, any> = import.meta.glob(
   './pages/**/[!_]*.tsx'
 );
 
-console.log({
+ConsoleLog({
   PagePathsWithComponents,
   paths: Object.keys(PagePathsWithComponents),
 });
 
 const routes = Object.keys(PagePathsWithComponents).map(path => {
   const dynamicMatch = path.match(/\.\/pages\/(.*?)\/\[(.*?)\](?:\/(.*?)(?:\/(.*?))?)?\.tsx$/);
-  console.log({ dynamicMatch });
+  ConsoleLog({ dynamicMatch });
   if (dynamicMatch) {
     const [, routePath, paramName, nestedPath = '', nestedParamName = ''] = dynamicMatch;
 
     const nestedPathToUse = nestedPath === 'index' ? '' : nestedPath;
     const nestedParamToUse = nestedParamName ? `:${nestedParamName}` : '';
 
-    console.log({
+    ConsoleLog({
       path: `${routePath}/:${paramName}${nestedPathToUse ? `/${nestedPathToUse}${nestedParamToUse}` : ''}`,
     });
 
@@ -70,7 +71,7 @@ const routes = Object.keys(PagePathsWithComponents).map(path => {
   return null; // Ignore invalid paths
 });
 
-console.log({ routes });
+ConsoleLog({ routes });
 
 const filteredRoutes = routes.filter(
   (

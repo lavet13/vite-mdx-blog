@@ -2,6 +2,7 @@ import { Box, Center, Container, Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { usePostById } from '../../../features/postById';
+import { ConsoleLog } from '../../../utils/debug/console-log';
 
 type PostByIdRouteParams = {
   postId: string;
@@ -10,7 +11,7 @@ type PostByIdRouteParams = {
 const PostById: FC = () => {
   const { postId } = useParams<PostByIdRouteParams>() as PostByIdRouteParams;
   const { data: postByIdResult, error, isError } = usePostById(postId, { retry: 1 });
-  console.log({ error, isError });
+  ConsoleLog({ error, isError });
 
   if(error) {
     throw error;

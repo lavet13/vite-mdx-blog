@@ -14,6 +14,7 @@ import {
 import { Select as ChakraSelect } from 'chakra-react-select';
 
 import type { ChakraStylesConfig, SelectComponent } from 'chakra-react-select';
+import { ConsoleLog } from '../utils/debug/console-log';
 
 export type SelectProps = {
   name: string;
@@ -40,7 +41,7 @@ const Select: FC<SelectProps> = memo(
           form: { setFieldValue },
         }: FastFieldProps) => {
           const handleChange = (option: any) => {
-            console.log({ option });
+            ConsoleLog({ option });
             setFieldValue(name, option.value);
           };
 

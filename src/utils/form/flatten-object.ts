@@ -1,3 +1,5 @@
+// import { ConsoleLog } from "../debug/console-log";
+
 export const flattenObject = (obj: Record<string, any>, parentKey = '') => {
   let result = {};
 
@@ -40,4 +42,4 @@ export const flattenObject = (obj: Record<string, any>, parentKey = '') => {
 //
 // const result = flattenObject(structuralInitialValues);
 //
-// console.log(result);
+// ConsoleLog(result);
