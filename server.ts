@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { Express, Request, Response } from 'express';
 import fs from 'fs';
 
@@ -62,6 +63,7 @@ async function configDev(app: Express) {
 
 const isProd = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || (isProd ? 4173 : 5173);
+console.log({ env: process.env });
 const app = express();
 
 const config = isProd ? configProd : configDev;

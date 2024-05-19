@@ -8,7 +8,7 @@
     "build": "rm -rf dist && yarn run build:client && yarn run build:server && yarn run preview",
     "build:client": "vite build --outDir dist/client --ssrManifest",
     "build:server": "vite build --outDir dist/server --ssr ./entry-server.tsx",
-    "preview": "cross-env NODE_ENV=production tsx server",
+    "preview": "cross-env NODE_ENV=production tsx ./server.ts",
     "theme": "chakra-cli tokens ./src/theme/index.ts",
     "theme:watch": "chakra-cli tokens ./src/theme/index.ts --watch"
   },
@@ -22,6 +22,7 @@
     "@tanstack/react-query-devtools": "^5.32.0",
     "@tanstack/react-query-persist-client": "^5.32.0",
     "chakra-react-select": "^4.7.6",
+    "dotenv": "^16.4.5",
     "formik": "^2.4.6",
     "framer-motion": "^11.1.7",
     "graphql": "^16.8.1",
