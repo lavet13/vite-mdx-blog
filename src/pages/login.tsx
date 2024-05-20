@@ -1,8 +1,9 @@
 import { Button, Center, Container, ToastId, useToast } from '@chakra-ui/react';
 import { Formik, FormikHelpers, FormikProps, Form } from 'formik';
+import { toFormikValidationSchema } from 'zod-formik-adapter';
+import { z } from 'zod';
 import { FC, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { object, ObjectSchema, string } from 'yup';
 import { Persist } from '../components/persist-form';
 import TextInput from '../components/text-input';
 import { useGetMe, useLogin } from '../features/auth';
@@ -20,12 +21,16 @@ type HandleSubmitProps = (
   formikHelpers: FormikHelpers<InitialValues>
 ) => void | Promise<any>;
 
-const Login: FC = () => {
-  const validationSchema: ObjectSchema<InitialValues> = object().shape({
-    login: string().required('Обязательно!'),
-    password: string().required('Обязательно!'),
-  });
+const Schema = z.object({
+  login: z.string({
+    required_error: 'Логин обязателен!',
+  }),
+  password: z.string({
+    required_error: 'Пароль обязателен',
+  }),
+});
 
+const Login: FC = () => {
   const initialValues: InitialValues = {
     login: '',
     password: '',
@@ -87,7 +92,7 @@ const Login: FC = () => {
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validationSchema={validationSchema}
+          validationSchema={toFormikValidationSchema(Schema)}
           innerRef={formRef}
         >
           {({ isSubmitting }) => {
