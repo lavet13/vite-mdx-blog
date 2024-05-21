@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { graphql } from "../../gql";
 import { MeQuery } from "../../gql/graphql";
 import client from "../../graphql-client";
+import queryClient from "../../react-query/query-client";
 import { InitialDataOptions } from "../../utils/graphql/initial-data-options";
 
 export const useGetMe = (options?: InitialDataOptions<MeQuery>) => {
@@ -18,7 +19,7 @@ export const useGetMe = (options?: InitialDataOptions<MeQuery>) => {
 
   return useQuery<MeQuery>({
     queryKey: [(me.definitions[0] as any).name.value],
-    queryFn: () => {
+    queryFn: async () => {
       return client.request(me);
     },
     refetchOnMount: true,

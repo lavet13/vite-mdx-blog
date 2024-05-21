@@ -26,15 +26,22 @@ const Header: FC = () => {
   const toast = useToast();
   const toastIdRef = useRef<ToastId | null>(null);
   const {
+    error: authError,
     data: getMeResult,
     isPending,
     isRefetching,
   } = useGetMe({
     retry: false,
-    meta: {
-      errorMessage: 'Failed to fetch the user info!',
-    },
   });
+
+  if(authError) {
+    if(isGraphQLRequestError(authError)) {
+      if(authError.response.errors[0].extensions.statusCode === 401) {
+        queryClient.setQueryData(['Me'], null);
+        console.error('Unauthorized');
+      }
+    }
+  }
 
   const { mutate: logout } = useLogout({
     onSuccess: () => {
